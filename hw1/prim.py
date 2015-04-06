@@ -11,9 +11,9 @@ def addCheapest(G, visited, edges):
     minCost = float('inf')
     minKey = None
     for x in edges:
-        if x[0] not in visited:
-            minCost = x[1]
+        if x[0] not in visited and x[1] < minCost:
             minKey = x[0]
+            minCost = x[1]
     addVertex(G, minKey, visited, edges)
     return minCost
 
