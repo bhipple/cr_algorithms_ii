@@ -1,0 +1,8 @@
+// ============================================================================
+//                                  Week 1
+// ============================================================================
+Greedy Algorithms:
+    Optimal Weighted Average completion time Job Scheduling
+    Prim's MST
+
+    Exchange argument proof technique
