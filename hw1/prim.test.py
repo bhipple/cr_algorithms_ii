@@ -28,13 +28,17 @@ class PrimTest(unittest.TestCase):
         G = parseFile('edges.txt')
         self.assertEqual(500, len(G.keys()))
 
-    def test_unit(self):
-        G = parseFile('7_prim.txt')
+    def test_unit1(self):
+        G = parseFile('prim_7.txt')
         self.assertEqual(7, mstWeight(G))
 
-    def test_simple(self):
+    def test_unit2(self):
+        G = parseFile('prim_37.txt')
+        self.assertEqual(37, mstWeight(G))
+
+    def test_homework(self):
         G = parseFile('edges.txt')
-        #self.assertEqual(0, mstWeight(G))
+        print "\nMST Weight: %s\n" % mstWeight(G)
 
 if __name__ == '__main__':
     unittest.main()
