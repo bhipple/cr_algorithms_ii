@@ -30,6 +30,9 @@ class HW1_Tester(unittest.TestCase):
         G = fileToGraph1('grid.txt')
         self.assertEqual(9, len(G))
 
+        G = fileToGraph1('simple.txt')
+        self.assertEqual(5, len(G))
+
     def test_line(self):
         G = fileToGraph1('line.txt')
 
