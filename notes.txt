@@ -6,3 +6,69 @@ Greedy Algorithms:
     Prim's MST
 
     Exchange argument proof technique
+
+// ============================================================================
+//                                  Week 2
+// ============================================================================
+Prim's MST Algorithm, Kruskal's MST Algorithm
+
+Union Find Data Structure
+    Maintains a partition of a set of objects
+    Find(x): returns the name Ci of the set to which x belongs
+    Union(C1, C2): Fuse all x in C1 and y in C2 to form one set, C3
+
+    Every element x has a pointer to the leader of its cluster
+    Find(x) runs in O(1) time by just returning the name of the node at the pointer
+
+    Union(C1, C2) runs in O(log(n)) time, with the following strategy:
+        Every Ci keeps a field with the number of elements in its cluster
+        WLOG assume |C1| <= |C2|:
+            Then we take all x in C1 and update their leader to be the leader of any element in C2
+            This is at worst an O(n) operation, but a given node only needs to have its leader pointer
+            changed at most log(n) times, since it only gets changed when it's in the smaller group.
+
+    Using this to implement Kruskal's algorithm, we find:
+    O(mlogn) for preprocessing sorting
+    O(m) time for the m O(1) cycle checks
+    O(nlogn) time for the leader pointer updates
+
+    ==> O(mlogn) total time
+
+MST State of the Art Algorithms
+    Karger-Klein-Tarjan JACM (1995):
+        O(m) average randomized algorithm (non-deterministic)
+
+    Chazelle Jotem (2000):
+        O(m * alpha(n)) deterministic runtime solution
+        where alpha(n) is the inverse Ackermann function, which grows *extremely* slowly
+
+Clustering
+    Let k be the number of clusters, define separated points as points p, q in different clusters
+    Max-Spacing k-Clusterings:
+        Given a distance measure and k, find the clustering which maximizes the spacing
+        between the clusters.  That is, we want to maximize the spacing between the closest
+        separated points.
+
+    Hierarchical Agglomerative Clustering - each point starts in its own cluster, and we repeatedly
+    merge the two closest clusters until we have only k clusters remaining.  This greedy clustering
+    algorithm is exactly the same as Kruskal's MST algorithm, except we abort early!
+
+    Also called single-link clustering
+
+Huffman Codes
+    We want to map each character of an alphabet to a binary string, using variable length encodings
+    This allows us to save space when some characters are more frequent than others
+
+    Prefix-Free codes: for every pair i, j in the alphabet, neither of the encodings f(i) or f(j)
+    is a prefix of the other. This avoids interpretation ambiguity.
+
+    Input: An alphabet Sigma, along with a probability p for each i in Sigma
+    Output: A binary tree with leaves <-> symbols of Sigma, minimizing
+    the average encoding length:
+        L(T) = sum(p_i * depth-of-i-in-Tree)
+
+    Greedy step: We take the two smallest nodes i,j  and merge them together into a new
+    node whose weight is p(i) + p(j), under an internal node
+
+    Repeat until we only have two nodes, at which point we add an internal node at the root
+    with left branch (0) going to i and right branch (1) going to j
