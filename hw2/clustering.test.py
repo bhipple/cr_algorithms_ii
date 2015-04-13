@@ -2,9 +2,6 @@
 import unittest
 from clustering import *
 
-def hamming_distance(a, b):
-    return 0
-
 # Input file has the following format:
 # Line 1 gives the number of nodes in the Graph
 # Each other line is in the format:
@@ -25,14 +22,6 @@ def loadFile(filename):
 
     edges = sorted(edges, cmp=lambda x,y: cmp(x[0], y[0]))
     return nodes, edges
-
-# For question 2, we have a much larger graph, with each row in the format:
-#   [# of nodes] [# of bits for each node's label]
-#   [first bit of node 1] ... [last bit of node 1]
-#   [first bit of node 2] ... [last bit of node 2]
-# Distances between the nodes are the Hamming distance between the two nodes' labels
-def loadFile2(filename):
-    return {}
 
 class Component_Tester(unittest.TestCase):
     def test_node(self):
@@ -109,30 +98,9 @@ class HW1_Tester(unittest.TestCase):
         [nodes, edges] = loadFile('grid.txt')
         self.assertEqual(1414, max_spacing_k_clustering(4, nodes, edges))
 
-    def hw1(self):
+    def test_hw1(self):
         [nodes, edges] = loadFile('clustering1.txt')
-        print max_spacing_k_clustering(4, nodes, edges)
-
-class HW2_Tester(unittest.TestCase):
-    def test_hamming(self):
-        self.assertEqual(3, hamming_distance("Benn", "Inna"))
-
-        a = "0 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 1 0 1 0 1 1 0 1"
-        b = "0 1 0 0 0 1 0 0 0 1 0 1 1 1 1 1 1 0 1 0 0 1 0 1"
-        self.assertEqual(3, hamming_distance(a, b))
-
-        a = "0 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 1 0 1 0 1 1 0 1"
-        b = "1 1 0 0 0 1 0 0 0 1 0 1 1 1 1 1 1 0 1 0 0 1 0 1"
-        self.assertEqual(4, hamming_distance(a, b))
-
-    def disabled_test_loading_file2(self):
-        [nodes, edges] = loadFile2('clustering_big.txt')
-        self.assertEqual(200000, len(nodes))
-
-    def hw2(self):
-        [nodes, edges] = loadFile('clustering_big.txt')
-        print max_spacing_k_clustering(4, nodes, edges)
-
+        print "\nHW1 Answer is: %s\n" % max_spacing_k_clustering(4, nodes, edges)
 
 if __name__ == "__main__":
     unittest.main()
