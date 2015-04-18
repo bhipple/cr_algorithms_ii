@@ -72,3 +72,103 @@ Huffman Codes
 
     Repeat until we only have two nodes, at which point we add an internal node at the root
     with left branch (0) going to i and right branch (1) going to j
+
+Advanced Union-Find
+    If we consider merging two clusters, with leaders A and B, instead of rewiring all
+    nodes in cluster B to point to A, we can just re-wire leader of B to point to A
+    This is a lazy union approach, and is much more efficient than the one previously discussed
+
+    We can implement this way an array X, so that X[i] gives the number of the leader
+    of element i.  Initially, X[i] = i for all i.
+
+    Then for any node i we can find its parent with this recursive algo:
+    def findLeader(i):
+        if X[i] = i:
+            return i
+        return findLeader(X[i])
+
+    This approach makes the unions take constant time (instead of log(n) time), but now
+    the find operations are more expensive -- up to log(n) time!
+
+    When we have the two clusters and we have to decide which one becomes the parent, we use a technique called
+    Union By Rank
+        For each x in X, maintain field rank[x]
+        Invariant: rank[x] = maximum number of hops from some leaf to x (height of x's subtree)
+
+// ============================================================================
+//                                  Week 3
+// ============================================================================
+Dynamic Programming
+
+Weighted Independent Sets in Path Graphs
+    Given a path graph (a line), where each vertex has a weight,
+    choose the subset of the nodes that maximizes the total weight of
+    the subset under the constraint that the set does not contain any
+    adjacent vertices
+
+    Let G = a path graph with n weighted vertices.
+    Consider an optimal solution S in G.  Then S either has or does
+    not have the last vertex v(n).  If it does not have v(n), then
+    S is also an optimal solution to the subgraph G' = G - {v(n)}
+    In this case we can remove the last vertex and repeat.
+
+    If v(n) is in S, then S' = S - {v(n)} is an optimal solution
+    for the subgraph G'' = G - { v(n), v(n-1) }. In this case, we
+    can recurse on G''!  We don't know which of these two conditions
+    we're in, so we'll have to recursively try both.
+
+    If we do this recursion naively, it's O(2^n) complexity, but with
+    dynamic programming we can reduce it to O(n)
+
+    i.e.,
+    Recursively compute:
+    S1 = max-wt IS of G'
+    S2 = max-wt IS of G''
+    return max(S1, S2 U {v(n)})
+
+    This recursion does O(2^n) recursive calls, but only on O(n) distinct problems,
+    so we can just memoize results.
+
+    Alternatively, we can phrase it in an iterative bottom-up approach.  We populate
+    an array A left to right such that A[i] = value of max-wt IS of Gi.
+    Initialize A[0] = 0; A[1] = w1.
+    For each i, A[i] = max(A[i-1], A[i-2] + wi
+    This algorithm tells us the optimal value
+
+    We may also be interested in the optimal set S. We can trace back through the filled-in
+    array to reconstruct S without doing any extra storage or computation during the algo!
+
+    i = len(A)
+    while i >= 1:
+        if A[i-1] >= A[i-2] + w(i):
+            i -= 1
+        else:
+            S.add(i)
+            i -= 2
+
+    General Principles of Dynamic Programming
+        1) Identify a small number of subproblems
+        2) can quickly + correctly solve "larger" subproblems given
+        the solution to "smaller subproblems", usually via a recurrence
+        3) After solving all subproblems, can quickly compute the final solution.
+        Often, the final solution is just the "biggest" subproblem
+
+Knapsack Problem
+    Given n items, each with a non-negative value v(i), and a non-negative integral size w(i),
+    and a nonnegative integer W for the size of the knapsack
+
+    Find the set S with maximal value under the constraint that the sum of weights of elements
+    in S is <= W
+
+    Consider an optional set S for a set of n items.  If item n is in S, then S - {n} is an
+    optimal solution for the first (n-1) items for capacity W - w(n)
+
+    Given a position, the subproblems are:
+        All possible prefixes of items {1, 2, ..., i}
+        All possible integral residual capacities x in {0,1,2,...,W}
+
+    Let A = a 2-D array
+    Initialize A[0, x] = 0 for x = o, 1, 2, . . ., W
+    for i in range(n+1):
+        for x in range(W+1):
+            A[i,x] = max(A[i-1, x], A[i-1, x - w(i)])  # Assuming w(i) fits in the knapsack
