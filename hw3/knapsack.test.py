@@ -26,5 +26,11 @@ class Problem1(unittest.TestCase):
         size, items = loadFromFile('knapsack1.txt')
         print "\nHW1 Answer: %s\n" % knapsack(size, items)
 
+class Problem2(unittest.TestCase):
+    def d_test_hw2(self):
+        size, items = loadFromFile('knapsack_big.txt')
+        print "\nHW2 Answer: %s\n" % knapsack(size, items)
+
+
 if __name__ == "__main__":
     unittest.main()
