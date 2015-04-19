@@ -5,7 +5,8 @@
 #include <utility>
 #include <vector>
 
-typedef std::vector<std::pair<size_t, size_t>> ItemVec;
+typedef std::pair<size_t, size_t> Item;
+typedef std::vector<Item> ItemVec;
 typedef std::vector<std::vector<int>> DP;
 
 ItemVec getItems(size_t& size, std::string fileName) {
@@ -21,7 +22,7 @@ ItemVec getItems(size_t& size, std::string fileName) {
         while(getline(myfile, line)) {
             std::stringstream ss(line);
             ss >> value >> weight;
-            std::pair<int, int> item = std::make_pair(std::stoi(value), std::stoi(weight));
+            Item item = std::make_pair(std::stoi(value), std::stoi(weight));
             items.push_back(item);
         }
     }
@@ -29,19 +30,20 @@ ItemVec getItems(size_t& size, std::string fileName) {
     return items;
 }
 
-int calculateDecision(const DP& A, const ItemVec& items, size_t i, size_t x) {
+int getRemainder(const Item& item, size_t x) {
+    int remainder = static_cast<int>(x) - item.second;
+    return remainder;
+}
+
+int calculateDecision(const std::vector<int>& last, const ItemVec& items, size_t i, size_t x) {
     int skipThis = 0;
     int useThis = 0;
-    if(i > 0) {
-        skipThis = A[i-1][x];
-    }
 
-    int remainder = static_cast<int>(x) - static_cast<int>(items[i].second);
+    skipThis = last[x];
+
+    int remainder = getRemainder(items[i], x);
     if(remainder >= 0) {
-        useThis = items[i].first;
-        if(i > 0) {
-            useThis += A[i-1][remainder];
-        }
+        useThis = items[i].first + last[remainder];
     }
 
     return std::max(skipThis, useThis);
@@ -49,13 +51,24 @@ int calculateDecision(const DP& A, const ItemVec& items, size_t i, size_t x) {
 
 int knapsack(size_t size, const ItemVec& items) {
     DP A;
-    for(size_t i = 0; i < items.size(); ++i) {
-        A.push_back(std::vector<int>(size+1));
-        for(size_t x = 0; x <= size; ++x) {
-            A[i][x] = calculateDecision(A, items, i, x);
+
+    A.push_back(std::vector<int>(size+1));
+    // Do the first column
+    for(size_t x = 0; x < size+1; ++x) {
+        int rem = getRemainder(items[0], x);
+        if(rem > 0) {
+            A[0][x] = rem;
         }
     }
-    return A[items.size()-1][size];
+    A.push_back(std::vector<int>(size+1));
+
+    for(size_t i = 1; i < items.size(); ++i) {
+        for(size_t x = 0; x <= size; ++x) {
+            A[1][x] = calculateDecision(A[0], items, i, x);
+        }
+        std::swap(A[0], A[1]);
+    }
+    return A[0][size];
 }
 
 int main() {
@@ -67,8 +80,6 @@ int main() {
     auto items2 = getItems(size, "knapsack1.txt");
     std::cout << "Knapsack for HW1 = " << knapsack(size, items2) << std::endl;
 
-    /*
     auto items3 = getItems(size, "knapsack_big.txt");
     std::cout << "Knapsack for HW2 = " << knapsack(size, items3) << std::endl;
-    */
 }

@@ -172,3 +172,12 @@ Knapsack Problem
     for i in range(n+1):
         for x in range(W+1):
             A[i,x] = max(A[i-1, x], A[i-1, x - w(i)])  # Assuming w(i) fits in the knapsack
+
+Optimal Binary Search Trees
+    When item searching is unformly distributed, a balanced binary search tree is fine.
+    When items have different search frequencies, though, we can often do better with
+    a carefully constructed BST that still satisfies the BST property but is not necessarily
+    balanced.
+
+    Given a collection of elements i in T and a p(i) for the probability of key i being
+    searched for, construct a BST that minimizes C(T) = sum(p(i) * search-time-for-i-in-T)
