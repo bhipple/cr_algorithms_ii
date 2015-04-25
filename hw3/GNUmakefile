@@ -1,5 +1,5 @@
 build:
-	clang++ -std=c++11 knapsack.cpp
+	clang++ -std=c++11 optimal_tree.cpp
 
 test:
 	./a.out
