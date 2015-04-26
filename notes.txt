@@ -181,3 +181,79 @@ Optimal Binary Search Trees
 
     Given a collection of elements i in T and a p(i) for the probability of key i being
     searched for, construct a BST that minimizes C(T) = sum(p(i) * search-time-for-i-in-T)
+
+// ============================================================================
+//                                  Week 4
+// ============================================================================
+Bellman Ford Algorithm for shortest paths in graphs with negative costs
+
+Let A = [][], indexed by i and v
+Base case:
+    When i = 0, then A[0, s] = 0; A[0,v] = infi for all v not equal to s
+
+for i = 1 to n-1:
+    for each v in V:
+        A[i,v] = min(A[i-1, v], min (w,v in E) { A[i-1, w] + e(wv) }
+        # That is, the path from s to v that uses at most i edges is
+        # the minimum of the path from s to v that uses at most i-1 edges
+        # and, for every w in V such that there is an edge from w to v,
+        # the minimum of every i-1 edge path from s to w + the weight
+        # of the edge (wv)
+
+All Pairs Shortest Paths
+Given n vertices, compute the shortest path between all pairs of vertices
+    If the graph is sparese and has no negative edges, we can get away with
+    running Dijkstra's algorithm n times, for a runtime of
+    O(n * m * log(m)) --> O(n^2 * log(n))
+    If the graph is dense, then we're looking at O(n^3 * log(n))
+
+    If there are negative edges, we could run Bellman Ford n times, but its running
+    time is O(n^2 * m), so we're at cubic time if the graph is sparese and
+    quartic time if the graph is dense.
+
+    Floyd Warshall
+        O(n^3) algorithm for APSP, even with negative edges and dense graphs
+        In sparse graphs, this is at least as good as Bellman-Ford, but it's
+        much better in dense graphs.
+        In graphs with non-negative edges, we usually just want to run Dijkstra
+
+    Base initialization:
+    Let A = [i,j,k] be a 3D array
+    for all i,j in V: A[i,j,0] = { 0 if i = j,
+                                   c(ij) if (i,j) in E,
+                                   infi if i != j and (i,j) not in E}
+
+    Run:
+    for k = 1 to n
+        for i = 1 to n
+            for j = 1 to n
+                A[i,j,k] = min { A[i,j,k-1
+                                 A[i,k,k-1] + A[k,j,k-1]
+                               }
+
+    Once it finishes, we can scan the diagonal of A to check if
+    G had a negative cycle.  If we see an A[i,i,n] < 0 for at least one i,
+    then there was a negative cycle. Essentially, this means that there
+    is a path to a node that is shorter than the 0-length path. This will
+    always happen when there's a cycle for obvious reasons.
+
+    If we want to reconstruct the actual path, and not just the cost, we
+    will need to store an extra constant space per subproblem.
+    B[i,j] = max label of an internal node on a shortest i-j path for all i,j in V
+
+    Now if we want to find the shortest path between i and j, we will look at
+    B[i,j] = x.  This says that the shortest path from i to j is the shortest path
+    from i to x + the shortest path from x to j. We can then recursively look at
+    B[i,x] and B[x,j] to fill in the path until we terminate with a completed path.
+
+
+    Johnson's Algorithm for APSP
+    It turns out we can get away in general graphs with running 1 invocation of
+    Bellman Ford, and then n-1 iterators of Dijkstra's algorithm.
+
+    For the BF run, we add a new vertex s which is connected to every node with an
+    edge cost of 0. We run BF starting at this s, and find the shortest path to every
+    other node. We then give every vertex a weight according to its shortest s-v path
+    length.  We can then re-weight every (i,j) edge to be equal to c(i,j) + w(i) - w(j)
+    This reweighting will eliminate all negative edges without impacting the shortest
+    paths.
