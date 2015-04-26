@@ -17,7 +17,8 @@ def loadFile(filename):
             v1 = int(parts[0])
             v2 = int(parts[1])
             cost = int(parts[2])
-            nodes[v1].adj.append((v2, cost))
+            nodes[v1].outs.append((v2, cost))
+            nodes[v2].ins.append((v1, cost))
 
     return nodes
 
@@ -26,7 +27,7 @@ class Component_Tester(unittest.TestCase):
         nodes = loadFile('g1.txt')
         self.assertEqual(1001, len(nodes))
         for node in nodes[1:]:
-            self.assertTrue(len(node.adj))
+            self.assertTrue(len(node.outs))
 
         nodes = loadFile('g2.txt')
         self.assertEqual(1001, len(nodes))
@@ -36,13 +37,39 @@ class Component_Tester(unittest.TestCase):
 
     def test_A_initialization(self):
         nodes = loadFile('g1.txt')
-        A = initDPArray(nodes)
-        n = len(nodes) + 1
+        A = bellmanInit(nodes, 1)
+        n = len(nodes)
         self.assertEqual(n, len(A))
         self.assertEqual(n, len(A[0]))
-        self.assertEqual(n, len(A[0][0]))
 
-#class HW1_Tester(unittest.TestCase):
+class HW_Tester(unittest.TestCase):
+    def test_neg_6(self):
+        nodes = loadFile('6.txt')
+        self.assertEqual(-6, allPairsShortestPaths(nodes))
+
+    def test_neg_10k(self):
+        nodes = loadFile('10003.txt')
+        self.assertEqual(-10003, allPairsShortestPaths(nodes))
+
+    def test_negative_cycle(self):
+        nodes = loadFile('negative_cycle.txt')
+        self.assertFalse(allPairsShortestPaths(nodes))
+
+class HW_Runner(unittest.TestCase):
+    def test_first_graph(self):
+        nodes = loadFile('g1.txt')
+        print "\nFor file g1, the shortest shortest path is:"
+        print allPairsShortestPaths(nodes)
+
+    def test_second_graph(self):
+        nodes = loadFile('g2.txt')
+        print "\nFor file g2, the shortest shortest path is:"
+        print allPairsShortestPaths(nodes)
+
+    def test_third_graph(self):
+        nodes = loadFile('g3.txt')
+        print "\nFor file g3, the shortest shortest path is:"
+        print allPairsShortestPaths(nodes)
 
 if __name__ == "__main__":
     unittest.main()
