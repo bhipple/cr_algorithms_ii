@@ -17,9 +17,8 @@ def loadFile(filename):
             v1 = int(parts[0])
             v2 = int(parts[1])
             cost = int(parts[2])
-            nodes[v1].outs.append((v2, cost))
-            nodes[v2].ins.append((v1, cost))
-
+            nodes[v1].outs.append([v2, cost])
+            nodes[v2].ins.append([v1, cost])
     return nodes
 
 class Component_Tester(unittest.TestCase):
@@ -42,7 +41,14 @@ class Component_Tester(unittest.TestCase):
         self.assertEqual(n, len(A))
         self.assertEqual(n, len(A[0]))
 
-class HW_Tester(unittest.TestCase):
+    def test_johnson_init(self):
+        nodes = loadFile('6.txt')
+        johnsonReweighting(nodes)
+        for node in nodes:
+            for out in node.outs:
+                self.assertGreaterEqual(out[1], 0)
+
+class Unit_Tester(unittest.TestCase):
     def test_neg_6(self):
         nodes = loadFile('6.txt')
         self.assertEqual(-6, allPairsShortestPaths(nodes))
