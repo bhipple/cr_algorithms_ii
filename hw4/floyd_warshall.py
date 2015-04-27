@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import pdb
+from priorityDictionary import *
 
 class Node():
     def __init__(self):
@@ -56,46 +57,50 @@ def johnsonReweighting(nodes):
 
     return True
 
-def addCheapestNode(nodes, visited, A):
-    candidate = None
-    minSoFar = float('inf')
-    for vertex in visited:
-        for edgepair in nodes[vertex].outs:
-            if edgepair[0] not in visited:
-                if A[vertex]+edgepair[1] < minSoFar:
-                    minSoFar = A[vertex]+edgepair[1]
-                    candidate = edgepair[0]
-    if candidate is None:
-        # No more nodes reachable from current set
-        return False
+def dijkstra(G, start):
+    D = {}  # Node -> distance
+    P = {}  # Node -> predecessor in path
+    Q = priorityDictionary()  # Node -> cost to add
+    Q[start] = 0
 
-    visited.append(candidate)
-    A[candidate] = minSoFar
-    return True
+    for v in Q:
+        D[v] = Q[v]
+        for w in G[v]:
+            vwLength = D[v] + G[v][w]
+            if w not in Q or vwLength < Q[w]:
+                Q[w] = vwLength
+                P[w] = v
 
-def dijkstra(nodes,s):
-    visited = []
-    A = [float('inf')] * len(nodes)
-    visited.append(s)
-    A[s]=0
-    while addCheapestNode(nodes, visited, A):
-        pass
-
-    # Post-process to remove weights
-    for i in range(1,len(nodes)):
-        A[i] = A[i] - nodes[s].weight + nodes[i].weight
+def postProcess(D, thisWeight, weights):
+    A = []
+    for key in D:
+        A.append(D[key] - weights[key] + thisWeight)
     return A
+
+def convertToDictRep(nodes):
+    G = {}
+    weights = {}
+    for i in range(1,len(nodes)):
+        weights[i] = nodes[i].weight
+        outs = {}
+        for out in nodes[i].outs:
+            outs[out[0]] = out[1]
+        G[i] = outs
+
+    return G, weights
 
 def allPairsShortestPaths(nodes):
     if not johnsonReweighting(nodes):
         print "\nNegative cycle detected."
         return False
 
-    nodeNumToDistAllOthers = []
-    nodeNumToDistAllOthers.append([float('inf')]) # Off by one filler
+    G, weights = convertToDictRep(nodes)
+    nodeNumToDistAllOthers = [[float('inf')]] # OBOE filler
     for s in range(1, len(nodes)):
+        D = dijkstra(G, G[s])
+        distances = postProcess(D, nodes[s].weight, weights)
         print s
-        nodeNumToDistAllOthers.append(dijkstra(nodes, s))
+        nodeNumToDistAllOthers.append(distances)
 
     print nodeNumToDistAllOthers
     return min([min(x) for x in nodeNumToDistAllOthers])
