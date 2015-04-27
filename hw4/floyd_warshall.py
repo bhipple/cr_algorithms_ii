@@ -54,10 +54,6 @@ def johnsonReweighting(nodes):
         for out in thisNode.outs:
             out[1] = out[1] + dists[i] - dists[out[0]]
 
-        # Technically unnecessary, since Dijkstra is only using outs
-        for ins in thisNode.ins:
-            ins[1] = ins[1] + dists[ins[0]] - dists[i]
-
     return True
 
 def addCheapestNode(nodes, visited, A):
@@ -98,6 +94,7 @@ def allPairsShortestPaths(nodes):
     nodeNumToDistAllOthers = []
     nodeNumToDistAllOthers.append([float('inf')]) # Off by one filler
     for s in range(1, len(nodes)):
+        print s
         nodeNumToDistAllOthers.append(dijkstra(nodes, s))
 
     print nodeNumToDistAllOthers
