@@ -44,10 +44,23 @@ def shortestShortestPath(nodeToDists):
         minPath = min(minPath, min(node.values()))
     return minPath
 
+def getStarters(G):
+    starters = []
+    for key in G:
+        outs = map(lambda x: x[1], G[key].outs)
+        if(min(outs + [1]) <= 0):
+            starters.append(key)
+    return starters
+
 def allPairsShortestPaths(G):
     nodeNumToDistAllOthers = []
-    for s in G:
-        print s
+
+    starters = getStarters(G)
+    print "Starters = %s" % starters
+    ct = 0
+    for s in starters:
+        ct += 1
+        print "%s (%s of %s)" % (s, ct, len(starters))
         thisNodesDists = bellmanFord(G, s)
         if not thisNodesDists:
             return False
