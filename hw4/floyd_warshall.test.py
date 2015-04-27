@@ -37,9 +37,11 @@ class Unit_Tester(unittest.TestCase):
         nodes = loadFile('10003.txt')
         self.assertEqual(-10003, allPairsShortestPaths(nodes))
 
+    """
     def test_negative_cycle(self):
         nodes = loadFile('negative_cycle.txt')
         self.assertFalse(allPairsShortestPaths(nodes))
+    """
 
 class HW_Runner(unittest.TestCase):
     """
@@ -54,7 +56,7 @@ class HW_Runner(unittest.TestCase):
         print allPairsShortestPaths(nodes)
     """
 
-    def d_test_third_graph(self):
+    def test_third_graph(self):
         nodes = loadFile('g3.txt')
         print "\nFor file g3, the shortest shortest path is:"
         print allPairsShortestPaths(nodes)

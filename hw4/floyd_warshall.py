@@ -19,51 +19,64 @@ def bellmanInit(G, s):
     return A
 
 def bellmanBody(G, A):
+    candidates = G.keys()
     for i in range(1, len(G) + 1):
-        for v in G:
+        somethingChanged = False
+        for v in candidates:
             minCost = A[i-1][v] or float('inf')
             for inc in G[v].ins:
                 minCost = min(minCost, A[i-1][inc[0]] + inc[1])
-            A[i][v] = minCost
-    return A
 
-def checkCycle(A):
-    return A[len(A)-1] != A[len(A)-2]
+            A[i][v] = minCost
+            if A[i][v] != A[i-1][v]:
+                somethingChanged = True
+
+        if not somethingChanged:
+            break
+    return A[i]
+
+def checkCycle(Ai, Ai1):
+    return Ai != Ai1
 
 def bellmanFord(G, s):
     A = bellmanInit(G, s)
     A = bellmanBody(G, A)
-    if checkCycle(A):
+
+    """
+    if checkCycle(Ai, Ai1):
         return False
+    """
 
-    return A[len(A)-1]
-
-def shortestShortestPath(nodeToDists):
-    minPath = float('inf')
-    for node in nodeToDists:
-        minPath = min(minPath, min(node.values()))
-    return minPath
+    return A
 
 def getStarters(G):
     starters = []
     for key in G:
         outs = map(lambda x: x[1], G[key].outs)
+        ins = map(lambda x: x[1], G[key].ins)
+        if ((min(ins + [1])) <= 0):
+            continue
         if(min(outs + [1]) <= 0):
             starters.append(key)
+
     return starters
 
 def allPairsShortestPaths(G):
     nodeNumToDistAllOthers = []
 
     starters = getStarters(G)
-    print "Starters = %s" % starters
+    print "\nStarters = %s" % starters
     ct = 0
+    fact = float(100 / float(len(starters)))
+    minSoFar = float('inf')
     for s in starters:
         ct += 1
-        print "%s (%s of %s)" % (s, ct, len(starters))
+        print "%s (%s perc) (min = %s)" % (s, float(ct) * fact, minSoFar)
+
         thisNodesDists = bellmanFord(G, s)
         if not thisNodesDists:
+            pdb.set_trace()
             return False
-        nodeNumToDistAllOthers.append(thisNodesDists)
+        minSoFar = min(minSoFar, min(thisNodesDists.values()))
 
-    return shortestShortestPath(nodeNumToDistAllOthers)
+    return minSoFar
