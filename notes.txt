@@ -257,3 +257,47 @@ Given n vertices, compute the shortest path between all pairs of vertices
     length.  We can then re-weight every (i,j) edge to be equal to c(i,j) + w(i) - w(j)
     This reweighting will eliminate all negative edges without impacting the shortest
     paths.
+
+// ============================================================================
+//                                  Week 5
+// ============================================================================
+Strategies for NP Complete Problems:
+1) Identificy tractable special cases
+2) Use heuristics: algorithms that are fast but occassionally not correct
+3) Exponential but better than brute-force search, done by applying some domain knowledge
+    or clever tricks.
+
+Vertex Cover Problem
+    Given a general Graph with a set of vertices V and a set of edges E between the vertices,
+    find the minimum cardinality subset S of V such that at least one endpoint of every e in E
+    has an endpoitn in S
+
+    A searching algorithm for the Vertex Cover problem, given a graph G and a cover size k:
+    1) Pick an arbitrary edge (u,v) in E
+    2) Recursively search for a vertex cover of size (k-1) in Gu. If found,
+    return union(S, u).
+    3) Do the same as in step 2, except for v.  If found, return it; otherwise,
+    there is no k vertex cover of G
+
+    This has runtime O(2^k * m), where m is the recursive work per recursive call not counting subcalls
+    This is much better than the naive O(n^k)
+
+Traveling Salesman Problem
+    Brute force search takes O(n!) time, but we can use a DP approach to get O(n^2 * 2^n)
+    Subproblems: For every destination j from 1 to n, for every subset S containing
+    elements from 1 to n that contains 1 and j, let:
+    L_s(1,j) = minimum length of a path from 1 to j that visits precisely the vertices of S exactly once each
+
+    Since there are 2^n choices of S and the calculation for each S takes n^2 time, we get the above runtime
+
+    Let A = a 2D array, indexed by subsets S that contain 1 and the destinations j from 1 to n
+
+    Base cases:
+    A[s,1] = 0 if S={1}S, infi otherwise
+
+    For m from 2 to n:  // Subproblem size
+        For each set S of size m that contains 1:
+            For each j in S, j != 1:
+                A[S(i,j)] = min of k in S { A[s-{j}}, k] + c(k,j) }
+
+    Return min_j=2 to m { A[{1,2,3,...,n}, j] + c(j1) }
