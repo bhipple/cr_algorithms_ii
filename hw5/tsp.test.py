@@ -31,7 +31,12 @@ class Unit_Tester(unittest.TestCase):
 
     def test_rectangle(self):
         cities = loadFile('rectangle.txt')
-        #self.assertEqual(10, tsp(cities))
+        self.assertEqual(10, tsp(cities))
+
+    def test_magic(self):
+        cities = loadFile('18_cities.txt')
+        self.assertAlmostEqual(3.501, tsp(cities), places=3)
+
 
 class HW_Runner(unittest.TestCase):
     def test_hw(self):
