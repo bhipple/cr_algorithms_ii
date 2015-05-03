@@ -35,14 +35,15 @@ class Unit_Tester(unittest.TestCase):
 
     def test_magic(self):
         cities = loadFile('18_cities.txt')
-        self.assertAlmostEqual(3.501, tsp(cities), places=3)
+        #self.assertAlmostEqual(3.501, tsp(cities), places=3)
 
 
 class HW_Runner(unittest.TestCase):
     def test_hw(self):
-        pass
-        #cities = loadFile('tsp.txt')
-        #self.assertEqual(0, tsp(cities))
+        print "\nStarting HW question:"
+        cities = loadFile('tsp.txt')
+        print "\n\nThe answer to the HW question is: %s\n" % tsp(cities)
+        self.assertEqual(0, tsp(cities))
 
 if __name__ == "__main__":
     unittest.main()

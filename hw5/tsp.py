@@ -24,6 +24,8 @@ def tsp(cities):
 
     # For each subproblem size + the start city
     for m in range(1, len(cities)):
+        Alast = A
+        A = {}
         # For each combination of the non-start vertices
         # of that subproblem size
         print "m = %s at time %s" % (m, time.strftime("%H:%M:%S"))
@@ -38,7 +40,7 @@ def tsp(cities):
                 # is the shortest path from 0 to any k in S, k!=j,
                 # plus the distance from k to j
                 key = tuple([i for i in S if i != j])
-                thisDict = A[key]
+                thisDict = Alast[key]
                 cost = float('inf')
                 for k in S:
                     if k == j: continue
