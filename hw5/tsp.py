@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import itertools
 import math
+import time
 
 import pdb
 
@@ -25,9 +26,11 @@ def tsp(cities):
     for m in range(1, len(cities)):
         # For each combination of the non-start vertices
         # of that subproblem size
+        print "m = %s at time %s" % (m, time.strftime("%H:%M:%S"))
         for comb in itertools.combinations(indexes, m):
             S = tuple([0] + [i for i in comb])
             if S not in A: A[S] = {}
+
             # For each j in S, calculate the shortest path
             # from 0 to j that visits every node in S once
             for j in S[1:]:
@@ -39,7 +42,7 @@ def tsp(cities):
                 cost = float('inf')
                 for k in S:
                     if k == j: continue
-                    cost = min(cost, thisDict.setdefault(k, float('inf')) + dist()
+                    cost = min(cost, thisDict.setdefault(k, float('inf')) + dist(cities[j], cities[k]))
                 A[S][j] = cost
 
     # Now, find the j that is the shortest ending point.
