@@ -9,7 +9,7 @@ def loadFile(filename):
         cities = map(lambda x: (float(x.split()[0]), float(x.split()[1])), fh.readlines())
     return cities
 
-class Component_Tester(unittest.TestCase):
+class TestComponents(unittest.TestCase):
     def test_loader(self):
         cities = loadFile('tsp.txt')
         self.assertEqual(25, len(cities))
@@ -23,8 +23,12 @@ class Component_Tester(unittest.TestCase):
     def test_dist(self):
         self.assertEqual(5, dist([0,0], [3,4]))
 
+    def test_key_hash(self):
+        self.assertEqual(17, StoKey((0,4)))
+        self.assertEqual(145, StoKey((0,4,7)))
+        self.assertEqual(16777361, StoKey((0,4,7,24)))
 
-class Unit_Tester(unittest.TestCase):
+class TestSample(unittest.TestCase):
     def test_line(self):
         cities = loadFile('line.txt')
         self.assertEqual(12, tsp(cities))
@@ -35,15 +39,14 @@ class Unit_Tester(unittest.TestCase):
 
     def test_magic(self):
         cities = loadFile('18_cities.txt')
-        #self.assertAlmostEqual(3.501, tsp(cities), places=3)
+        self.assertAlmostEqual(3.501, tsp(cities), places=3)
 
 
-class HW_Runner(unittest.TestCase):
+class TestHW(unittest.TestCase):
     def test_hw(self):
         print "\nStarting HW question:"
         cities = loadFile('tsp.txt')
         print "\n\nThe answer to the HW question is: %s\n" % tsp(cities)
-        self.assertEqual(0, tsp(cities))
 
 if __name__ == "__main__":
     unittest.main()
