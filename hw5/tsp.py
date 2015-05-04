@@ -8,10 +8,11 @@ import pdb
 def dist(city1, city2):
     return math.sqrt((city1[0] - city2[0])**2 + (city1[1] - city2[1])**2)
 
+# Since ever set has the element 0, we do not count it in the key
 def StoKey(S):
     key = int(0)
-    for val in S:
-        key = key | (1 << val)
+    for val in S[1:]:
+        key = key | (1 << (val-1))
     return key
 
 def tsp(cities):
@@ -19,15 +20,17 @@ def tsp(cities):
     # the destination vertex.  So A[S][j] = the length
     # of the shortest path from start to j, using every
     # vertex in S exactly once.
-    A = [[float('inf')] * len(cities) for x in xrange(2**len(cities))]
+    A = [[float('inf')] * len(cities) for x in xrange(2**len(cities)-1)]
     indexes = tuple([i for i in range(0,len(cities))])
 
     # As a base case, A[S][0] = 0 if S == {0} and
-    # infinity otherwise
-    A[1][0] = 0
+    # infinity otherwise. Furthermore, the distance to each
+    # city when S = (0,j) is just cost(0,j)
+    for j in range(1,len(cities)):
+        A[StoKey([0,j])][j] = dist(cities[j], cities[0])
 
     # For each subproblem size + the start city (0)
-    for m in range(1, len(cities)):
+    for m in range(2, len(cities)):
         # For each combination of the non-start vertices
         # of that subproblem size
         print "m = %s at time %s" % (m, time.strftime("%H:%M:%S"))

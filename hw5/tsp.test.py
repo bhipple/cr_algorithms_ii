@@ -24,9 +24,9 @@ class TestComponents(unittest.TestCase):
         self.assertEqual(5, dist([0,0], [3,4]))
 
     def test_key_hash(self):
-        self.assertEqual(17, StoKey((0,4)))
-        self.assertEqual(145, StoKey((0,4,7)))
-        self.assertEqual(16777361, StoKey((0,4,7,24)))
+        self.assertEqual(8, StoKey((0,4)))
+        self.assertEqual(72, StoKey((0,4,7)))
+        self.assertEqual(8388680, StoKey((0,4,7,24)))
 
 class TestSample(unittest.TestCase):
     def test_line(self):
@@ -42,7 +42,7 @@ class TestSample(unittest.TestCase):
         self.assertAlmostEqual(3.501, tsp(cities), places=3)
 
 
-class TestHW(unittest.TestCase):
+class Test_Z_HW(unittest.TestCase):
     def test_hw(self):
         print "\nStarting HW question:"
         cities = loadFile('tsp.txt')
