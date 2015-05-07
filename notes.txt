@@ -301,3 +301,89 @@ Traveling Salesman Problem
                 A[S(i,j)] = min of k in S { A[s-{j}}, k] + c(k,j) }
 
     Return min_j=2 to m { A[{1,2,3,...,n}, j] + c(j1) }
+
+// ============================================================================
+//                                  Week 6
+// ============================================================================
+Knapsack Revisited: Consider a greedy algorithm that does the following:
+    1) Sort items by value/weight
+    2) Take items in this order until the knapsack cannot fit more
+    3) Then, return either the step-2 solution, or the maximum value item that will
+    fit in the knapsack, whichever is better.
+    This algorithm is a "1/2 approximation algorithm", meaning it always returns
+    an answer that is at least 1/2 as good as the optimal answer
+
+    Additionally, if we can assume a constraint that no item is bigger than X% of
+    the knapsack weight, then we can say that the greedy algorithm is at least
+    (100-X)% as good as optimal. (e.g., if no item is bigger than 10%, we do 90%+ accuracy)
+
+Knapsack Heuristic with Dynamic Programming
+    For a user specific parameter epsilon>0, we guarantee a (1-epsilon) accurate approximation
+    for which runtime will increase as epsilon decreases, giving the user a runtime vs.
+    accuracy tradeoff with the possibility for arbitrarily close approximations
+
+    In our previous DP algorithm, we had O(nW) runtime for integer sizes only, where W is the
+    size of the knapsack.
+    Here, we will use a O(n^2 * V) runtime approach, where V is the largest value of any item
+    Let A = 2D Array, such that A[i,x] = the minimum total size needed to achieve value
+        >= x using only the first i items
+
+    A[0,x] = 0 if x = 0, inf otherwise
+    for i from 1 to n:
+        for x from 0 to n*vmax:
+            A[i,x] = min( A[i-1,x], w[i] + A[i-1, x-v[i]] )
+
+    Return the largest x such that A[n,x] <= W
+
+Local Search and the Maximum Cut Problem
+    Given a graph G with edges E, find a partition of the vertices into
+    two groups that maximizes the number of crossing edges.
+
+    NP Complete in general, but we can do >=50% of optimal using an algorithm
+    that starts with a random cut, then keeps swapping vertices that have
+    more internal edges than crossing edges until convergence. This runs in
+    polynomial time.
+
+    Neighborhoods: for each x in X, specify which y in X are its "neighbors".
+    Local search is a technique that starts with a solution and iteratively
+    improves it by swapping to a superior neighborhood. (i.e., it searches
+    for superior neighboring solutions).
+
+    When no superior neighborhood exists, we return the final (locally optimal)
+    solution.
+
+    To generate the initial proposed solution x, we either
+    A) Randomly generate a solution, use local search to get a locally optimal
+    solution. Do this many times and return the best.
+    B) Use some heuristic to get a "pretty good" solution, then use local search
+    to make it strictly better.
+
+    If there are several superior neighborhoods y, we could choose y at random,
+    choose the y that gives the biggest improvement, or use some other more complex
+    heuristic.
+
+    We also have to figure out how to define the neighborhoods. With bigger neighborhoods,
+    we will get better solutions, but will require more computing time.
+
+2-SAT
+    Given n boolean varaibles x[1] to x[n], and m clauses of 2 literals each (e.g., "x[1] or x[2]")
+    Output whether it's possible to assign values to the x[i]'s such that every clause is satisfied.
+
+    Papadimitriou's Algorithm: local search algorithm guaranteed to solve this in polynomial time
+    Given n, as the number of variables:
+    We repeat log_2(n) times:
+        Choose a random initial assignment
+        Repeat 2n^2 times:
+            If the current assignment satisfies all clauses, halt and report this
+            Else, pick arbitrary unsatisfied clause and flip the value of one of its variables
+    Return "unsatisfiable"
+
+    Obviously runs in polynomial time.
+
+    Random Walks on a line of non-negative integers:
+    At each time step, your position goes up or down by 1, with 50/50 probability,
+    unless you're at a boundary in which case you go the only possible way.
+
+    At time 0, you start at position 0. The expected number of steps to go to location
+    n is exactly n^2. Moreover, as a special case of Markov's inequality,
+    P[ T(n) > 2n^2 ] <= 1/2
