@@ -1,4 +1,4 @@
-#include "two_sat.h"
+#include "papadimitriou_2sat.h"
 
 #include <gtest/gtest.h>
 #include <algorithm>
@@ -63,9 +63,14 @@ TEST(Unit, SmallUnsatisfiable)
     EXPECT_FALSE(TwoSat::satisfiable(cv));
 }
 
-TEST(HW, FirstProblem)
+TEST(HW, AllProblems)
 {
-    EXPECT_FALSE(TwoSat::satisfiable("../instances/2sat1.txt"));
+    EXPECT_TRUE(TwoSat::satisfiable("../instances/2sat1.txt"));
+    EXPECT_TRUE(TwoSat::satisfiable("../instances/2sat2.txt"));
+    EXPECT_TRUE(TwoSat::satisfiable("../instances/2sat3.txt"));
+    EXPECT_TRUE(TwoSat::satisfiable("../instances/2sat4.txt"));
+    EXPECT_TRUE(TwoSat::satisfiable("../instances/2sat5.txt"));
+    EXPECT_TRUE(TwoSat::satisfiable("../instances/2sat6.txt"));
 }
 
 int main(int argc, char **argv)

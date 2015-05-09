@@ -1,4 +1,4 @@
-#include "two_sat.h"
+#include "papadimitriou_2sat.h"
 
 #include <cstdlib>
 #include <ctime>
@@ -10,6 +10,7 @@
 #include <string>
 #include <utility>
 #include <algorithm>
+#include <map>
 
 namespace TwoSat {
 
@@ -50,14 +51,46 @@ void randomflip(std::vector<bool>& vars)
     }
 }
 
-void prune(std::vector<Constraint>& cv)
+// Helper to see if we've detected both the positive and negative for a given variable #
+struct Var {
+    Var() {
+        positive = false;
+        negative = false;
+    }
+    bool positive;
+    bool negative;
+};
+
+void setValCond(std::map<int,Var>& valConditions, int var)
 {
-    std::remove_if(cv.begin(), cv.end(), [](Constraint c){return c.x == 0 && c.y == 0; });
+    if(var < 0) {
+        valConditions[-1*var].negative = true;
+    } else {
+        valConditions[var].positive = true;
+    }
 }
 
-void preprocess(std::vector<Constraint>& cv, std::vector<bool>& vals)
+void preprocess(std::vector<Constraint>& cv, size_t varCt)
 {
-
+    size_t initialSize = cv.size();
+    std::map<int, Var> valConditions;
+    for(size_t i = 1; i <= varCt; ++i) {
+        valConditions[i] = Var();
+    }
+    for(auto c : cv) {
+        setValCond(valConditions, c.x);
+        setValCond(valConditions, c.y);
+    }
+    for(int i = 1; i < static_cast<int>(valConditions.size()); ++i) {
+        if(valConditions[i].positive != valConditions[i].negative) {
+            cv.erase(std::remove_if(cv.begin(),
+                                    cv.end(),
+                                    [&](Constraint c){return abs(c.x) == i || abs(c.y) == i;}),
+                     cv.end());
+        }
+    }
+    std::cout << "Preprocessing removed " << initialSize - cv.size() << " conditions (" << cv.size() << " remain)." << std::endl;
+    if(initialSize != cv.size()) { preprocess(cv, varCt); }
 }
 
 bool satisfiable(const std::string& fileName)
@@ -66,9 +99,10 @@ bool satisfiable(const std::string& fileName)
     return satisfiable(cv);
 }
 
-bool satisfiable(const std::vector<Constraint>& cv)
+bool satisfiable(std::vector<Constraint>& cv)
 {
     const size_t n = cv.size();
+    preprocess(cv, n);
 
     std::vector<bool> vars(n+2);
     const size_t runs = log2(n) + 1;
