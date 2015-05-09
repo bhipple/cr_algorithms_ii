@@ -5,7 +5,7 @@
 
 TEST(LoadFile, Gets100kRecords)
 {
-    std::vector<TwoSat::Constraint> c = TwoSat::loadFile("instances/2sat1.txt");
+    std::vector<TwoSat::Constraint> c = TwoSat::loadFile("../instances/2sat1.txt");
     EXPECT_EQ(100000, c.size());
 }
 

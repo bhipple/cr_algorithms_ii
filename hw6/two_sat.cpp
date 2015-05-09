@@ -18,6 +18,7 @@ std::vector<Constraint> loadFile(std::string fileName) {
     if(myfile.is_open()) {
         int x, y;
         std::string line;
+        getline(myfile, line);  // Ignore the header
         while(getline(myfile, line)) {
             std::stringstream ss(line);
             ss >> x >> y;
