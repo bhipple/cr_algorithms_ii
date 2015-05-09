@@ -6,7 +6,8 @@
 
 namespace TwoSat {
 
-struct Constraint {
+class Constraint {
+  public:
     int x;
     int y;
 };
