@@ -13,8 +13,10 @@ class Constraint {
 };
 
 bool satisfiable(const std::string& fileName);
-bool satisfiable(const std::vector<Constraint>& constraints);
+bool satisfiable(const std::vector<Constraint>& cv);
 bool satisfied(const Constraint& c, const std::vector<bool>& cv);
+
+void prune(std::vector<Constraint>& cv);
 
 std::vector<Constraint> loadFile(std::string fileName);
 void randomflip(std::vector<bool>& vars);

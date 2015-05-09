@@ -9,6 +9,7 @@
 #include <sstream>
 #include <string>
 #include <utility>
+#include <algorithm>
 
 namespace TwoSat {
 
@@ -47,6 +48,16 @@ void randomflip(std::vector<bool>& vars)
         r = rand() % 2;
         var = r;
     }
+}
+
+void prune(std::vector<Constraint>& cv)
+{
+    std::remove_if(cv.begin(), cv.end(), [](Constraint c){return c.x == 0 && c.y == 0; });
+}
+
+void preprocess(std::vector<Constraint>& cv, std::vector<bool>& vals)
+{
+
 }
 
 bool satisfiable(const std::string& fileName)
