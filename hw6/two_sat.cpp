@@ -1,12 +1,14 @@
 #include "two_sat.h"
 
+#include <cstdlib>
+#include <ctime>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <math.h>
 #include <sstream>
 #include <string>
 #include <utility>
-#include <cstdlib>
 
 namespace TwoSat {
 
@@ -34,8 +36,8 @@ std::vector<Constraint> loadFile(std::string fileName) {
 
 bool satisfied(const Constraint& c, const std::vector<bool>& cv)
 {
-    bool a = (c.x >= 0 ? cv[c.x] : !cv[c.x]);
-    return a || (c.y >= 0 ? cv[c.y] : !cv[c.y]);
+    bool a = (c.x >= 0 ? cv[c.x] : !cv[abs(c.x)]);
+    return a || (c.y >= 0 ? cv[c.y] : !cv[abs(c.y)]);
 }
 
 void randomflip(std::vector<bool>& vars)
@@ -47,14 +49,23 @@ void randomflip(std::vector<bool>& vars)
     }
 }
 
+bool satisfiable(const std::string& fileName)
+{
+    std::vector<Constraint> cv = loadFile(fileName);
+    return satisfiable(cv);
+}
+
 bool satisfiable(const std::vector<Constraint>& cv)
 {
     const size_t n = cv.size();
 
     std::vector<bool> vars(n+2);
-    for(size_t i = 0; i <= log2(n); ++i) {
+    const size_t runs = log2(n) + 1;
+    for(size_t i = 0; i <= runs; ++i) {
+        std::cout << "Run " << runs << std::endl;
         randomflip(vars);
         for(size_t j = 0; j < 2*n*n; ++j) {
+            std::cout << "Flip #" << j << std::endl;
             std::vector<int> unsatisfied;
             for(size_t chk = 0; chk < cv.size(); ++chk) {
                 if(!satisfied(cv[chk], vars)) {

@@ -29,9 +29,8 @@
 #
 
 guard :shell do
-    watch(%r{^.+\.cpp$}) do
-        `echo "Compiling"`
-        `make`
+    watch(%r{^../.+\.cpp$}) do
+        `make && ./runTests`
     end
 
 #watch(%r{runTests}) do
