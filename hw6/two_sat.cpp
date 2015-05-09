@@ -62,10 +62,9 @@ bool satisfiable(const std::vector<Constraint>& cv)
     std::vector<bool> vars(n+2);
     const size_t runs = log2(n) + 1;
     for(size_t i = 0; i <= runs; ++i) {
-        std::cout << "Run " << runs << std::endl;
+        std::cout << "Run " << i << " of " << runs << std::endl;
         randomflip(vars);
         for(size_t j = 0; j < 2*n*n; ++j) {
-            std::cout << "Flip #" << j << std::endl;
             std::vector<int> unsatisfied;
             for(size_t chk = 0; chk < cv.size(); ++chk) {
                 if(!satisfied(cv[chk], vars)) {
