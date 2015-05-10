@@ -33,10 +33,9 @@ guard :shell do
         `make && ./runTests`
     end
 
-#watch(%r{runTests}) do
-#`echo "Testing"`
-#`./runTests`
-#end
+    watch(%r{^.+\.py$}) do
+        `./scc_2sat.t.py`
+    end
 end
 
 # This is an example with all options that you can specify for guard-process
